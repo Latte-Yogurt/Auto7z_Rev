@@ -38,7 +38,7 @@ namespace MD5Calculater
         {
 			newArgs = args;
 			InitializeComponent();
-			this.AutoScaleMode = AutoScaleMode.Dpi;
+			INITIALIZE_MAINFORM_SIZE();
 
 			currentLanguage = GET_CURRENT_LANGUAGE();
 
@@ -189,14 +189,33 @@ namespace MD5Calculater
 							Exception fileEx = null;
 							Exception folderEx = null;
 
-							string[] value = File.Exists(file) ? await Task.Run(() => CALCULATE_MD5(sizeBytes, new string[] { file }, out fileEx)) : await Task.Run(() => CALCULATE_MD5(sizeBytes, fileInDirectoryPaths, out folderEx));
-							md5.AddRange(value);
+							string[] value;
 
-							if (md5 == null)
+							if (File.Exists(file))
 							{
-								Exception error = File.Exists(filePath) ? fileEx : folderEx;
-								ERROR_EXCEPTION_MESSAGE(error);
+								value = await Task.Run(() => CALCULATE_MD5(sizeBytes, new string[] { file }, out fileEx));
+							}
+
+							else
+							{
+								value = await Task.Run(() => CALCULATE_MD5(sizeBytes, fileInDirectoryPaths, out folderEx));
+							}
+
+							if (fileEx != null)
+							{
+								ERROR_EXCEPTION_MESSAGE(fileEx);
 								return;
+							}
+
+							if (folderEx != null)
+							{
+								ERROR_EXCEPTION_MESSAGE(folderEx);
+								return;
+							}
+
+							if (value != null)
+							{
+								md5.AddRange(value);
 							}
 						}
 
@@ -212,6 +231,13 @@ namespace MD5Calculater
 			{
 				Close();
 			}
+		}
+
+		private void INITIALIZE_MAINFORM_SIZE()
+		{
+			AutoScaleMode = AutoScaleMode.Dpi;
+			MinimumSize = new Size(450, 250);
+			MaximumSize = MinimumSize;
 		}
 
 		private void InitializeLanguageTexts()
@@ -271,9 +297,10 @@ namespace MD5Calculater
 
 		private void PROGRESSBAR_FORM_LOAD(object sender, EventArgs e)
 		{
-			int locationX = Screen.PrimaryScreen.Bounds.Width / 2 - this.Width / 2;
-			int locationY = Screen.PrimaryScreen.Bounds.Height / 2 - this.Height / 2;
-			this.Location = new Point(locationX, locationY);
+			int locationX = Screen.PrimaryScreen.Bounds.Width / 2 - Width / 2;
+			int locationY = Screen.PrimaryScreen.Bounds.Height / 2 - Height / 2;
+			Location = new Point(locationX, locationY);
+			Size = MinimumSize;
 		}
 
 		private string[] GET_DIRECTORY_FILES(string path)
