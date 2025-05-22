@@ -17,6 +17,7 @@ namespace Auto7z_Rev
         public AboutForm()
         {
             InitializeComponent();
+            AutoScaleMode = AutoScaleMode.Dpi;
             Parameters.currentLanguage = Auto7zMainForm.Parameters.currentLanguage;
             InitializeLanguageTexts();
             UpdateLanguage();

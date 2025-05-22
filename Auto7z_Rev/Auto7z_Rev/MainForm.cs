@@ -34,11 +34,11 @@ namespace Auto7z_Rev
             public static bool hasPermission { get; set; }
             public static bool packedOneFile { get; set; }
             public static bool isHandleSeparately { get; set; } // 标记符意思为是否将文件进行合并处理
+            public static float systemScale { get; set; }
             public static string currentLanguage { get; set; }
             public static int newScreenWidth { get; set; }
             public static int newScreenHeight { get; set; }
-            public static int formWidth { get; set; }
-            public static int formHeight { get; set; }
+            public static float newSystemScale { get; set; }
             public static string volume { get; set; }
             public static string format { get; set; }
             public static string password { get; set; }
@@ -47,6 +47,7 @@ namespace Auto7z_Rev
             public static bool generateMd5 { get; set; }
             public static bool autoSave { get; set; }
             public static bool portable { get; set; }
+            public static bool maxLevelCompress { get; set; }
             public static long sevenZUsageCount { get; set; }
             public static string filePath { get; set; }
             public static string fileName { get; set; }
@@ -82,12 +83,11 @@ namespace Auto7z_Rev
             }
 
             CHECK_XML_LEGAL(Parameters.xmlPath);
+            Parameters.systemScale = GET_SCALE();
             Parameters.currentLanguage = GET_CURRENT_LANGUAGE(Parameters.xmlPath);
             Parameters.newScreenWidth = GET_SCREEN_WIDTH(Parameters.xmlPath);
             Parameters.newScreenHeight = GET_SCREEN_HEIGHT(Parameters.xmlPath);
-
-            Parameters.formWidth = GET_FORM_WIDTH(Parameters.xmlPath);
-            Parameters.formHeight = GET_FORM_HEIGHT(Parameters.xmlPath);
+            Parameters.newSystemScale = GET_SYSTEM_SCALE(Parameters.xmlPath);
 
             InitializeLanguageTexts();
             UpdateLanguage();
@@ -349,6 +349,17 @@ namespace Auto7z_Rev
         #endregion
 
         #region Initialize Parameters
+        private float GET_SCALE()
+        {
+            float dpi;
+            using (Graphics g = CreateGraphics())
+            {
+                dpi = g.DpiX;
+            }
+
+            return dpi / 96.0f;
+        }
+
         private void InitializeLanguageTexts()
         {
             languageTexts = new Dictionary<string, Dictionary<string, string>>
@@ -430,15 +441,43 @@ namespace Auto7z_Rev
             Parameters.generateMd5 = GET_GENERATE_MD5(Parameters.xmlPath);
             Parameters.autoSave = GET_AUTOSAVE(Parameters.xmlPath);
             Parameters.portable = GET_PORTABLE(Parameters.xmlPath);
+            Parameters.maxLevelCompress = GET_MAXLEVEL_COMPRESS(Parameters.xmlPath);
             Parameters.sevenZUsageCount = GET_SEVENZ_USAGE_COUNT(Parameters.xmlPath);
 
-            DEFAULT_VOLUME_TEXTBOX();
-            DEFAULT_FORMAT_MENU();
-            DEFAULT_PASSWORD_TEXTBOX();
-            DEFAULT_ZSTD();
             DEFAULT_OPTION_MENU_DISABLE_VOLUME();
             DEFAULT_OPTION_MENU_GENERATE_MD5();
+            DEFAULT_VOLUME_TEXTBOX();
+            DEFAULT_FORMAT_MENU();
+            DEFAULT_ZSTD();
+            DEFAULT_PASSWORD_TEXTBOX();
             DEFAULT_AUTOSAVE();
+        }
+
+        private void INITIALIZE_COMPONENTS_POSITION()
+        {
+            LabelFormat.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 - LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - LabelFormat.Height / 2);
+            ComboBoxFormat.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 + LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - ComboBoxFormat.Height / 2 - (int)(1.0f * Parameters.systemScale));
+            CheckBoxZstd.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 + LabelFormat.Width / 2 + (int)(5.0f * Parameters.systemScale) - (int)(20.0f * Parameters.systemScale) + ComboBoxFormat.Width, MainPanel.Height / 2 - CheckBoxZstd.Height / 2 + (int)(1.0f * Parameters.systemScale));
+
+            LabelSize.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 - LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - LabelFormat.Height / 2 - this.Height / 6);
+            TextBoxSize.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 + LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - ComboBoxFormat.Height / 2 - this.Height / 6);
+            LabelUnit.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 + LabelFormat.Width / 2 + (int)(5.0f * Parameters.systemScale) - (int)(20.0f * Parameters.systemScale) + TextBoxSize.Width, MainPanel.Height / 2 - ComboBoxFormat.Height / 2 - this.Height / 6 + (int)(3.0f * Parameters.systemScale));
+
+            LabelPassword.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 - LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - LabelFormat.Height / 2 + this.Height / 6);
+            TextBoxPassword.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 + LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - ComboBoxFormat.Height / 2 + this.Height / 6);
+
+            CheckBoxAutoSave.Location = new Point((int)(20.0f * Parameters.systemScale), MainPanel.Height - CheckBoxAutoSave.Height - (int)(15.0f * Parameters.systemScale));
+            ButtonConfig.Location = new Point(MainPanel.Width - ButtonConfig.Width - (int)(10.0f * Parameters.systemScale), MainPanel.Height - ButtonConfig.Height - (int)(10.0f * Parameters.systemScale));
+
+            ButtonConfig.Size = new Size((int)(120.0f * Parameters.systemScale), (int)(30.0f * Parameters.systemScale));
+        }
+
+        private void INITIALIZE_COMPONENTS_SIZE()
+        {
+            AutoScaleMode = AutoScaleMode.Dpi;
+            MinimumSize = new Size((int)(20 * Parameters.systemScale) + CheckBoxAutoSave.Width + (int)(20 * Parameters.systemScale) + ButtonConfig.Width + (int)(20 * Parameters.systemScale), (int)(20 * Parameters.systemScale) + CheckBoxAutoSave.Width + (int)(20 * Parameters.systemScale) + ButtonConfig.Width + (int)(20 * Parameters.systemScale));
+            MaximumSize = MinimumSize;
+            Size = MinimumSize;
         }
         #endregion
 
@@ -932,9 +971,9 @@ namespace Auto7z_Rev
                     command += $" -p{Parameters.password}";
                 }
 
-                if (Parameters.format == "7z")
+                if (Parameters.format == "7z" && Parameters.maxLevelCompress)
                 {
-                    command += @" -mx=9 -ms=on";
+                    command += @" -m0=LZMA2 -mx=9 -ms=on";
                 }
 
                 return command;
@@ -973,9 +1012,9 @@ namespace Auto7z_Rev
                     command.Append($" -p{Parameters.password}");
                 }
 
-                if (Parameters.format == "7z")
+                if (Parameters.format == "7z" && Parameters.maxLevelCompress)
                 {
-                    command.Append(@" -mx=9 -ms=on");
+                    command.Append(@" -m0=LZMA2 -mx=9 -ms=on");
                 }
 
                 return command.ToString();
@@ -1325,8 +1364,6 @@ namespace Auto7z_Rev
                         new XElement("Language", $"{Parameters.currentLanguage}"),
                         new XElement("ScreenWidth", "0"),
                         new XElement("ScreenHeight", "0"),
-                        new XElement("FormWidth", $"{MinimumSize.Width}"),
-                        new XElement("FormHeight", $"{MinimumSize.Height}"),
                         new XElement("SystemScale", "0"),
                         new XElement("LocationX", $"{newLocationX}"),
                         new XElement("LocationY", $"{newLocationY}"),
@@ -1338,6 +1375,7 @@ namespace Auto7z_Rev
                         new XElement("GenerateMD5", "True"),
                         new XElement("AutoSave", "True"),
                         new XElement("Portable", "True"),
+                        new XElement("MaxLevelCompress", "False"),
                         new XElement("SevenZUsageCount", "0")
                     );
                 }
@@ -1348,8 +1386,7 @@ namespace Auto7z_Rev
                         new XElement("Language", $"{currentCulture.Name}"),
                         new XElement("ScreenWidth", "0"),
                         new XElement("ScreenHeight", "0"),
-                        new XElement("FormWidth", $"{MinimumSize.Width}"),
-                        new XElement("FormHeight", $"{MinimumSize.Height}"),
+                        new XElement("SystemScale", "0"),
                         new XElement("LocationX", $"{newLocationX}"),
                         new XElement("LocationY", $"{newLocationY}"),
                         new XElement("Volume", "2000"),
@@ -1360,6 +1397,7 @@ namespace Auto7z_Rev
                         new XElement("GenerateMD5", "True"),
                         new XElement("AutoSave", "True"),
                         new XElement("Portable", "True"),
+                        new XElement("MaxLevelCompress", "False"),
                         new XElement("SevenZUsageCount", "0")
                     );
                 }
@@ -1371,8 +1409,7 @@ namespace Auto7z_Rev
                     new XElement("Language", "en-US"),
                     new XElement("ScreenWidth", "0"),
                     new XElement("ScreenHeight", "0"),
-                    new XElement("FormWidth", $"{MinimumSize.Width}"),
-                    new XElement("FormHeight", $"{MinimumSize.Height}"),
+                    new XElement("SystemScale", "0"),
                     new XElement("LocationX", $"{newLocationX}"),
                     new XElement("LocationY", $"{newLocationY}"),
                     new XElement("Volume", "2000"),
@@ -1383,6 +1420,7 @@ namespace Auto7z_Rev
                     new XElement("GenerateMD5", "True"),
                     new XElement("AutoSave", "True"),
                     new XElement("Portable", "True"),
+                    new XElement("MaxLevelCompress", "False"),
                     new XElement("SevenZUsageCount", "0")
                 );
             }
@@ -1666,14 +1704,12 @@ namespace Auto7z_Rev
             return 0;
         }
 
-        private int GET_FORM_WIDTH(string configFilePath)
+        private float GET_SYSTEM_SCALE(string configFilePath)
         {
             if (!File.Exists(configFilePath))
             {
                 CREATE_DEFAULT_CONFIG(configFilePath);
             }
-
-            int newWidth = Screen.PrimaryScreen.Bounds.Width;
 
             XDocument xdoc;
 
@@ -1688,112 +1724,49 @@ namespace Auto7z_Rev
                 // 如果加载失败，创建新的默认配置文件并返回默认值
                 CREATE_DEFAULT_CONFIG(configFilePath);
 
-                return MinimumSize.Width;
+                return 0;
             }
 
-            var widthNode = xdoc.Descendants("FormWidth").FirstOrDefault();
+            var scaleNode = xdoc.Descendants("SystemScale").FirstOrDefault();
 
-            if (widthNode == null)
+            if (scaleNode == null)
             {
 
-                XElement newNode = new XElement("FormWidth", newWidth);
+                XElement newNode = new XElement("SystemScale", Parameters.systemScale);
 
                 xdoc.Root.Add(newNode);
 
                 xdoc.Save(configFilePath);
 
-                return MinimumSize.Width;
+                return 0;
             }
 
-            var width = widthNode.Value;
-            int widthToInt;
+            var scale = scaleNode.Value;
+            float scaleToFloat;
 
-            if (string.IsNullOrEmpty(width))
+            if (string.IsNullOrEmpty(scale))
             {
-                return MinimumSize.Width;
+                return 0;
             }
 
-            if (!int.TryParse(width, out widthToInt))
+            if (!float.TryParse(scale, out scaleToFloat))
             {
-                return MinimumSize.Width;
+                return 0;
             }
 
-            if (widthToInt <= MinimumSize.Width || widthToInt > MaximumSize.Width)
+            if (scaleToFloat <= 0)
             {
-                return MinimumSize.Width;
+                return 0;
             }
 
-            if (widthToInt <= MaximumSize.Width)
+            const float epsilon = 0.00001f; // 定义一个浮点值的误差范围
+
+            if (Math.Abs(scaleToFloat - Parameters.systemScale) < epsilon)
             {
-                return widthToInt;
+                return scaleToFloat;
             }
 
-            return MinimumSize.Width;
-        }
-
-        private int GET_FORM_HEIGHT(string configFilePath)
-        {
-            if (!File.Exists(configFilePath))
-            {
-                CREATE_DEFAULT_CONFIG(configFilePath);
-            }
-
-            int newHeight = Screen.PrimaryScreen.Bounds.Height;
-
-            XDocument xdoc;
-
-            try
-            {
-                // 加载 XML 文档
-                xdoc = XDocument.Load(configFilePath);
-            }
-
-            catch (XmlException)
-            {
-                // 如果加载失败，创建新的默认配置文件并返回默认值
-                CREATE_DEFAULT_CONFIG(configFilePath);
-
-                return MinimumSize.Height;
-            }
-
-            var heightNode = xdoc.Descendants("FormHeight").FirstOrDefault();
-
-            if (heightNode == null)
-            {
-
-                XElement newNode = new XElement("FormHeight", newHeight);
-
-                xdoc.Root.Add(newNode);
-
-                xdoc.Save(configFilePath);
-
-                return MinimumSize.Height;
-            }
-
-            var height = heightNode.Value;
-            int heightToInt;
-
-            if (string.IsNullOrEmpty(height))
-            {
-                return MinimumSize.Height;
-            }
-
-            if (!int.TryParse(height, out heightToInt))
-            {
-                return MinimumSize.Height;
-            }
-
-            if (heightToInt <= MinimumSize.Height || heightToInt > MaximumSize.Height)
-            {
-                return MinimumSize.Height;
-            }
-
-            if (heightToInt <= MaximumSize.Height)
-            {
-                return heightToInt;
-            }
-
-            return MinimumSize.Height;
+            return 0;
         }
 
         private int GET_LOCATION_X(string configFilePath)
@@ -2391,6 +2364,69 @@ namespace Auto7z_Rev
             return portableToBool;
         }
 
+        private bool GET_MAXLEVEL_COMPRESS(string configFilePath)
+        {
+            if (!File.Exists(configFilePath))
+            {
+                CREATE_DEFAULT_CONFIG(configFilePath);
+            }
+
+            XDocument xdoc;
+
+            try
+            {
+                // 加载 XML 文档
+                xdoc = XDocument.Load(configFilePath);
+            }
+
+            catch (XmlException)
+            {
+                // 如果加载失败，创建新的默认配置文件并返回默认值
+                CREATE_DEFAULT_CONFIG(configFilePath);
+
+                return false;
+            }
+
+            var maxLevelCompressNode = xdoc.Descendants("MaxLevelCompress").FirstOrDefault();
+
+            var supportedBool = new HashSet<string>
+            {
+                "True",
+                "False"
+            };
+
+            if (maxLevelCompressNode == null)
+            {
+                XElement newNode = new XElement("MaxLevelCompress", "False");
+
+                xdoc.Root.Add(newNode);
+
+                xdoc.Save(configFilePath);
+
+                return false;
+            }
+
+            var maxLevelCompressValue = maxLevelCompressNode.Value;
+            bool maxLevelCompressToBool;
+
+            if (string.IsNullOrEmpty(maxLevelCompressValue))
+            {
+                return false;
+            }
+
+            if (!supportedBool.Contains(maxLevelCompressValue))
+            {
+                return false;
+            }
+
+            if (!bool.TryParse(maxLevelCompressValue, out maxLevelCompressToBool))
+            {
+                return false;
+            }
+
+            return maxLevelCompressToBool;
+        }
+
         private long GET_SEVENZ_USAGE_COUNT(string configFilePath)
         {
             if (!File.Exists(configFilePath))
@@ -2833,6 +2869,8 @@ namespace Auto7z_Rev
             UPDATE_CONFIG($"{Parameters.xmlPath}", "DisableVolume", $"{Parameters.disableVolume}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "GenerateMD5", $"{Parameters.generateMd5}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "AutoSave", $"{Parameters.autoSave}");
+            UPDATE_CONFIG($"{Parameters.xmlPath}", "Portable", $"{Parameters.portable}");
+            UPDATE_CONFIG($"{Parameters.xmlPath}", "MaxLevelCompress", $"{Parameters.maxLevelCompress}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "SevenZUsageCount", $"{Parameters.sevenZUsageCount}");
         }
 
@@ -2845,17 +2883,6 @@ namespace Auto7z_Rev
 
             UPDATE_CONFIG($"{Parameters.xmlPath}", "LocationX", $"{locationX}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "LocationY", $"{locationY}");
-        }
-
-        private void SAVE_FORMSIZE()
-        {
-            CHECK_XML_LEGAL(Parameters.xmlPath);
-
-            int width = Size.Width;
-            int height = Size.Height;
-
-            UPDATE_CONFIG($"{Parameters.xmlPath}", "FormWidth", $"{width}");
-            UPDATE_CONFIG($"{Parameters.xmlPath}", "FormHeight", $"{height}");
         }
 
         private void ADD_SEVENZ_USAGE_COUNT()
@@ -2871,6 +2898,7 @@ namespace Auto7z_Rev
         {
             Parameters.currentLanguage = "zh-CN";
             UpdateLanguage();
+            INITIALIZE_COMPONENTS_POSITION();
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Language", $"{Parameters.currentLanguage}");
         }
 
@@ -2878,6 +2906,7 @@ namespace Auto7z_Rev
         {
             Parameters.currentLanguage = "zh-TW";
             UpdateLanguage();
+            INITIALIZE_COMPONENTS_POSITION();
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Language", $"{Parameters.currentLanguage}");
         }
 
@@ -2885,6 +2914,7 @@ namespace Auto7z_Rev
         {
             Parameters.currentLanguage = "en-US";
             UpdateLanguage();
+            INITIALIZE_COMPONENTS_POSITION();
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Language", $"{Parameters.currentLanguage}");
         }
 
@@ -3086,10 +3116,11 @@ namespace Auto7z_Rev
         #region Initialize MainForm Behavior
         private void AUTO7Z_MAINFORM_LOAD(object sender, EventArgs e)
         {
+            const float epsilon = 0.00001f; // 定义一个浮点值的误差范围
             int locationX;
             int locationY;
 
-            if (Parameters.newScreenWidth == Screen.PrimaryScreen.Bounds.Width && Parameters.newScreenHeight == Screen.PrimaryScreen.Bounds.Height)
+            if (Parameters.newScreenWidth == Screen.PrimaryScreen.Bounds.Width && Parameters.newScreenHeight == Screen.PrimaryScreen.Bounds.Height && Math.Abs(Parameters.newSystemScale - Parameters.systemScale) < epsilon)
             {
                 locationX = GET_LOCATION_X(Parameters.xmlPath);
                 locationY = GET_LOCATION_Y(Parameters.xmlPath);
@@ -3105,7 +3136,13 @@ namespace Auto7z_Rev
                 Location = new Point(locationX, locationY);
             }
 
-            Size = new Size(Parameters.formWidth, Parameters.formHeight);
+            INITIALIZE_COMPONENTS_POSITION();
+            INITIALIZE_COMPONENTS_SIZE();
+        }
+
+        private void AUTO7Z_MAINFORM_RESIZE(object sender, EventArgs e)
+        {
+            INITIALIZE_COMPONENTS_POSITION();
         }
 
         private void AUTO7Z_MAINFORM_FORM_CLOSING(object sender, FormClosingEventArgs e)
@@ -3123,7 +3160,6 @@ namespace Auto7z_Rev
             }
 
             SAVE_LOCATION();
-            SAVE_FORMSIZE();
         }
 
         private void MAINFORM_DRAGENTER(object sender, DragEventArgs e)
