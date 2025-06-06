@@ -308,27 +308,30 @@ namespace MD5Calculater
 			return Directory.GetFiles(path);
 		}
 
-		private string[] CALCULATE_MD5(long size, string[] paths, out Exception error)
+		private string[] CALCULATE_MD5(long totalSize, string[] paths, out Exception error)
 		{
 			List<string> data = new List<string>();
+			long processedTotalSize = 0; // 记录所有文件已处理的总大小
 
-			long processedSize = 0;
+			// 定义块大小为 100MB
+			const int CHUNK_SIZE = 100 * 1024 * 1024;
 
 			string labelText = null;
 			switch (currentLanguage)
 			{
 				case "zh-CN":
-					labelText = "已完成：";
-					break;
 				case "zh-TW":
 					labelText = "已完成：";
 					break;
 				case "en-US":
 					labelText = "Processed: ";
 					break;
+				default: // 默认值
+					labelText = "Processed: ";
+					break;
 			}
 
-			error = null;
+			error = null; // 初始化错误为 null
 
 			foreach (string path in paths)
 			{
@@ -336,40 +339,65 @@ namespace MD5Calculater
 				{
 					string fullPath = Path.GetFullPath(path);
 					string valueName = Path.GetFileName(fullPath);
+					long currentFileLength = new FileInfo(fullPath).Length; // 当前文件的大小
+					long currentFileProcessedSize = 0; // 当前文件已处理的大小
 
 					using (var md5 = MD5.Create())
 					{
 						using (var stream = File.OpenRead(fullPath))
 						{
-							byte[] hashBytes = md5.ComputeHash(stream);
-							// 将字节数组转换为十六进制字符串
+							byte[] buffer = new byte[CHUNK_SIZE]; // 缓冲区
+							int bytesRead;
+
+							while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+							{
+								md5.TransformBlock(buffer, 0, bytesRead, buffer, 0);
+
+								currentFileProcessedSize += bytesRead;
+								processedTotalSize += bytesRead; // 累加到总处理大小
+
+								int percent = (int)(processedTotalSize * 100 / totalSize);
+								Invoke((MethodInvoker)delegate
+								{
+									ProgressBar.Value = percent;
+									LabelPercent.Text = $"{labelText}{percent}%";
+								});
+
+								// 更新太频繁可能导致 UI 闪烁或卡顿，加入10毫秒的缓冲时间
+								System.Threading.Thread.Sleep(10);
+							}
+
+							// TransformFinalBlock 会计算最终的哈希值
+							md5.TransformFinalBlock(buffer, 0, 0); // 0, 0 表示所有数据都已通过 TransformBlock处理，现在完成计算
+
+							byte[] hashBytes = md5.Hash; // 获取最终的哈希值
 							string originValue = $"{BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant()} *{valueName}";
 							data.Add(originValue);
-
-							processedSize += new FileInfo(fullPath).Length;
-							int percent = (int)(processedSize * 100 / size);
-
-							Invoke((MethodInvoker)delegate
-							{
-								ProgressBar.Value = percent;
-								LabelPercent.Text = $"{labelText}{percent}%";
-							});
 						}
 					}
 				}
 				catch (Exception ex)
 				{
 					error = ex;
+					// 如果发生错误，返回空数组，并跳出循环
+					Invoke((MethodInvoker)delegate
+					{
+						ProgressBar.Value = 0; // 错误时重置进度条
+						LabelPercent.Text = labelText + "0%";
+					});
 					return new string[0];
 				}
 			}
+
 			string[] result = data.ToArray();
 
+			// 所有文件处理完毕后，确保进度条显示 100%
 			Invoke((MethodInvoker)delegate
 			{
-                ProgressBar.Value = 100;
+				ProgressBar.Value = 100;
 				LabelPercent.Text = labelText + "100%";
 			});
+
 			return result;
 		}
 
