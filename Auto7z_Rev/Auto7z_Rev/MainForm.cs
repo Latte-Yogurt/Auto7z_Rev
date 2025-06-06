@@ -808,10 +808,9 @@ namespace Auto7z_Rev
         private bool EXECUTE_COMMAND_BOOL(string command)
         {
             var process = new Process();
-            process.StartInfo.FileName = @"cmd.exe";
-            process.StartInfo.Arguments = $"/C \"{command}\"";
+            process.StartInfo.FileName = $"\"{Parameters.sevenZExePath}\"";
+            process.StartInfo.Arguments = command;
             process.StartInfo.UseShellExecute = false;
-            process.StartInfo.CreateNoWindow = true;
 
             try
             {
@@ -959,7 +958,7 @@ namespace Auto7z_Rev
 
             if (Parameters.format == "7z" || Parameters.format == "zip" || Parameters.format == "tar")
             {
-                string command = $"@\"{Parameters.sevenZExePath}\" a -aoa -t{Parameters.format} \"{Parameters.newFolderPath}\\{Parameters.fileName}.{Parameters.format}\" \"{fullPath}\"";
+                string command = $"a -aoa -t{Parameters.format} \"{Parameters.newFolderPath}\\{Parameters.fileName}.{Parameters.format}\" \"{fullPath}\"";
 
                 if (ADD_VOLUME_CONDITION(size, targetSize))
                 {
@@ -994,7 +993,7 @@ namespace Auto7z_Rev
             if (Parameters.format == "7z" || Parameters.format == "zip" || Parameters.format == "tar")
             {
                 StringBuilder command = new StringBuilder();
-                command.Append($"@\"{Parameters.sevenZExePath}\" a -aoa -t{Parameters.format} \"{Parameters.newFolderPath}\\{Parameters.fileName}.{Parameters.format}\"");
+                command.Append($"a -aoa -t{Parameters.format} \"{Parameters.newFolderPath}\\{Parameters.fileName}.{Parameters.format}\"");
 
                 foreach (var path in paths)
                 {
@@ -1055,7 +1054,7 @@ namespace Auto7z_Rev
             bool isFile = !Parameters.isHandleSeparately ? File.Exists(Parameters.filePaths[0]) : File.Exists(Parameters.filePath);
             long size = isFile ? Parameters.fileSize : Parameters.folderSize; // 确定使用文件大小还是文件夹大小
 
-            string command = $"@\"{Parameters.sevenZExePath}\" a -aoa -tzstd \"{Parameters.newFolderPath}\\{Parameters.fileName}.tar.zst\" \"{Parameters.newFolderPath}\\{Parameters.fileName}.tar\"";
+            string command = $"a -aoa -tzstd \"{Parameters.newFolderPath}\\{Parameters.fileName}.tar.zst\" \"{Parameters.newFolderPath}\\{Parameters.fileName}.tar\"";
 
             // 添加分卷选项
             if (size > targetSize && targetSize > 0 && !OptionMenuDisableVolume.Checked)
@@ -1075,7 +1074,7 @@ namespace Auto7z_Rev
                 var process = new Process();
                 process.StartInfo.FileName = $"\"{md5Exe}\"";
                 process.StartInfo.Arguments = $"\"{path}\"";
-                process.StartInfo.UseShellExecute = true;
+                process.StartInfo.UseShellExecute = false;
 
                 process.Start();
                 process.WaitForExit(); // 等待进程完成
@@ -1937,7 +1936,7 @@ namespace Auto7z_Rev
                 return "2000";
             }
 
-            if (volumeToInt < 0)
+            if (volumeToInt <= 0)
             {
                 return "0";
             }
@@ -2862,7 +2861,7 @@ namespace Auto7z_Rev
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Language", $"{Parameters.currentLanguage}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "ScreenWidth", $"{width}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "ScreenHeight", $"{height}");
-            UPDATE_CONFIG($"{Parameters.xmlPath}", "PartSize", $"{Parameters.volume}");
+            UPDATE_CONFIG($"{Parameters.xmlPath}", "Volume", $"{Parameters.volume}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Format", $"{Parameters.format}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Password", $"{Parameters.password}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Zstd", $"{Parameters.zstd}");
