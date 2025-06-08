@@ -21,6 +21,7 @@ namespace MD5Calculater
 
 		private bool isMultipleFiles = false;
 		private bool packedOneFile = false;
+		private float systemScale;
 
 		public class LogSetting
 		{
@@ -41,6 +42,7 @@ namespace MD5Calculater
 			INITIALIZE_MAINFORM_SIZE();
 
 			currentLanguage = GET_CURRENT_LANGUAGE();
+			systemScale = GET_SCALE();
 
 			InitializeLanguageTexts();
 			UpdateLanguage();
@@ -85,6 +87,17 @@ namespace MD5Calculater
 				ERROR_NO_FILE();
 				Close();
 			}
+		}
+
+		private float GET_SCALE()
+		{
+			float dpi;
+			using (Graphics g = CreateGraphics())
+			{
+				dpi = g.DpiX;
+			}
+
+			return dpi / 96.0f;
 		}
 
 		private async void PROGRESS_BAR_FORM_SHOWN(object sender, EventArgs e)
@@ -236,7 +249,7 @@ namespace MD5Calculater
 		private void INITIALIZE_MAINFORM_SIZE()
 		{
 			AutoScaleMode = AutoScaleMode.Dpi;
-			MinimumSize = new Size(450, 250);
+			MinimumSize = new Size((int)(20 * systemScale) + ProgressBar.Width + (int)(20 * systemScale), (int)(50 * systemScale) + LabelCalculating.Height * 3 + ProgressBar.Height * 3 + LabelPercent.Height * 3 + (int)(20 * systemScale));
 			MaximumSize = MinimumSize;
 		}
 
