@@ -31,6 +31,7 @@ namespace Auto7z_Rev
             public readonly static string langPath = Path.Combine(sevenZPath, "Lang");
             public readonly static string zhCNPath = Path.Combine(langPath, "zh-cn.txt");
             public readonly static string zhTWPath = Path.Combine(langPath, "zh-tw.txt");
+            public static bool isFormLoaded { get; set; } // 标识符意思为是否确定窗体已被加载 
             public static bool hasPermission { get; set; }
             public static bool packedOneFile { get; set; }
             public static bool isHandleSeparately { get; set; } // 标记符意思为是否将文件进行合并处理
@@ -105,6 +106,7 @@ namespace Auto7z_Rev
 
             if (args != null && args.Length > 0)
             {
+                Parameters.isFormLoaded = false;
                 MAIN_TASK(args);
                 Close();
             }
@@ -3117,6 +3119,11 @@ namespace Auto7z_Rev
             INITIALIZE_COMPONENTS_SIZE();
         }
 
+        private void AUTO7Z_MAINFORM_SHOWN(object sender, EventArgs e)
+        {
+            Parameters.isFormLoaded = true;
+        }
+
         private void AUTO7Z_MAINFORM_FORM_CLOSING(object sender, FormClosingEventArgs e)
         {
             DELETE_EXTRACT_RESOURCE();
@@ -3131,7 +3138,10 @@ namespace Auto7z_Rev
                 SAVE_CONFIG();
             }
 
-            SAVE_LOCATION();
+            if (Parameters.isFormLoaded)
+            {
+                SAVE_LOCATION();
+            }
         }
 
         private void MAINFORM_DRAGENTER(object sender, DragEventArgs e)

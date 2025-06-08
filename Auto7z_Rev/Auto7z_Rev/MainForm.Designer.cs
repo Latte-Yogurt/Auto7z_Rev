@@ -221,6 +221,7 @@ namespace Auto7z_Rev
             this.MenuStrip.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.tableLayoutPanel.SetColumnSpan(this.MenuStrip, 9);
             this.MenuStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.MenuStrip.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.MenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.LanguageMenu,
@@ -325,6 +326,7 @@ namespace Auto7z_Rev
             this.Text = "Auto7z";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AUTO7Z_MAINFORM_FORM_CLOSING);
             this.Load += new System.EventHandler(this.AUTO7Z_MAINFORM_LOAD);
+            this.Shown += new System.EventHandler(this.AUTO7Z_MAINFORM_SHOWN);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MAINFORM_DRAGDROP);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MAINFORM_DRAGENTER);
             this.DragLeave += new System.EventHandler(this.MAINFORM_DRAGLEAVE);
