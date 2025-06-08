@@ -108,7 +108,7 @@ namespace Auto7z_Rev
             | System.Windows.Forms.AnchorStyles.Right)));
             this.LabelCopyRight.AutoSize = true;
             this.MainTableLayoutPanel.SetColumnSpan(this.LabelCopyRight, 5);
-            this.LabelCopyRight.Font = new System.Drawing.Font("微软雅黑 Light", 8F);
+            this.LabelCopyRight.Font = new System.Drawing.Font("Segoe Print", 7F);
             this.LabelCopyRight.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.LabelCopyRight.Location = new System.Drawing.Point(3, 305);
             this.LabelCopyRight.Name = "LabelCopyRight";

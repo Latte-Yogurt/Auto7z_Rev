@@ -40,7 +40,7 @@ namespace Auto7z_Rev
             this.TextBoxSize = new System.Windows.Forms.TextBox();
             this.LabelSize = new System.Windows.Forms.Label();
             this.ButtonConfig = new System.Windows.Forms.Button();
-            this.MainPanel = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
             this.LanguageMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.LanguageMenuSelect = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,25 +52,28 @@ namespace Auto7z_Rev
             this.OptionMenuGenerateMD5 = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutAuto7zRev = new System.Windows.Forms.ToolStripMenuItem();
-            this.MainPanel.SuspendLayout();
+            this.tableLayoutPanel.SuspendLayout();
             this.MenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // TextBoxPassword
             // 
-            this.TextBoxPassword.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.TextBoxPassword.Location = new System.Drawing.Point(170, 286);
+            this.TextBoxPassword.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel.SetColumnSpan(this.TextBoxPassword, 3);
+            this.TextBoxPassword.Location = new System.Drawing.Point(162, 281);
             this.TextBoxPassword.Name = "TextBoxPassword";
-            this.TextBoxPassword.Size = new System.Drawing.Size(182, 31);
+            this.TextBoxPassword.Size = new System.Drawing.Size(165, 31);
             this.TextBoxPassword.TabIndex = 9;
             this.TextBoxPassword.TextChanged += new System.EventHandler(this.TEXTBOX_PASSWORD_TEXT_CHANGED);
             // 
             // CheckBoxAutoSave
             // 
             this.CheckBoxAutoSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.CheckBoxAutoSave.Location = new System.Drawing.Point(12, 402);
+            this.CheckBoxAutoSave.AutoSize = true;
+            this.tableLayoutPanel.SetColumnSpan(this.CheckBoxAutoSave, 4);
+            this.CheckBoxAutoSave.Location = new System.Drawing.Point(13, 403);
             this.CheckBoxAutoSave.Name = "CheckBoxAutoSave";
-            this.CheckBoxAutoSave.Size = new System.Drawing.Size(240, 30);
+            this.CheckBoxAutoSave.Size = new System.Drawing.Size(234, 28);
             this.CheckBoxAutoSave.TabIndex = 11;
             this.CheckBoxAutoSave.Text = "程序关闭时自动保存配置";
             this.CheckBoxAutoSave.UseVisualStyleBackColor = true;
@@ -78,9 +81,9 @@ namespace Auto7z_Rev
             // 
             // LabelPassword
             // 
-            this.LabelPassword.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.LabelPassword.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.LabelPassword.AutoSize = true;
-            this.LabelPassword.Location = new System.Drawing.Point(78, 289);
+            this.LabelPassword.Location = new System.Drawing.Point(70, 284);
             this.LabelPassword.Name = "LabelPassword";
             this.LabelPassword.Size = new System.Drawing.Size(86, 24);
             this.LabelPassword.TabIndex = 4;
@@ -89,9 +92,9 @@ namespace Auto7z_Rev
             // 
             // LabelFormat
             // 
-            this.LabelFormat.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.LabelFormat.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.LabelFormat.AutoSize = true;
-            this.LabelFormat.Location = new System.Drawing.Point(78, 214);
+            this.LabelFormat.Location = new System.Drawing.Point(70, 209);
             this.LabelFormat.Name = "LabelFormat";
             this.LabelFormat.Size = new System.Drawing.Size(86, 24);
             this.LabelFormat.TabIndex = 2;
@@ -100,23 +103,24 @@ namespace Auto7z_Rev
             // 
             // ComboBoxFormat
             // 
-            this.ComboBoxFormat.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.ComboBoxFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel.SetColumnSpan(this.ComboBoxFormat, 3);
             this.ComboBoxFormat.Cursor = System.Windows.Forms.Cursors.Default;
             this.ComboBoxFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxFormat.FormattingEnabled = true;
-            this.ComboBoxFormat.Location = new System.Drawing.Point(170, 211);
+            this.ComboBoxFormat.Location = new System.Drawing.Point(162, 208);
             this.ComboBoxFormat.Name = "ComboBoxFormat";
-            this.ComboBoxFormat.Size = new System.Drawing.Size(143, 32);
+            this.ComboBoxFormat.Size = new System.Drawing.Size(165, 32);
             this.ComboBoxFormat.TabIndex = 7;
             this.ComboBoxFormat.SelectedIndexChanged += new System.EventHandler(this.COMBOBOX_FORMAT_SELECTED_INDEX_CHANGED);
             // 
             // CheckBoxZstd
             // 
-            this.CheckBoxZstd.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.CheckBoxZstd.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.CheckBoxZstd.AutoSize = true;
-            this.CheckBoxZstd.Location = new System.Drawing.Point(319, 213);
+            this.CheckBoxZstd.Location = new System.Drawing.Point(333, 207);
             this.CheckBoxZstd.Name = "CheckBoxZstd";
-            this.CheckBoxZstd.Size = new System.Drawing.Size(70, 28);
+            this.CheckBoxZstd.Size = new System.Drawing.Size(72, 28);
             this.CheckBoxZstd.TabIndex = 8;
             this.CheckBoxZstd.Text = "zstd";
             this.CheckBoxZstd.UseVisualStyleBackColor = true;
@@ -124,31 +128,32 @@ namespace Auto7z_Rev
             // 
             // LabelUnit
             // 
-            this.LabelUnit.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.LabelUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.LabelUnit.AutoSize = true;
-            this.LabelUnit.Location = new System.Drawing.Point(319, 140);
+            this.LabelUnit.Location = new System.Drawing.Point(333, 133);
             this.LabelUnit.Name = "LabelUnit";
-            this.LabelUnit.Size = new System.Drawing.Size(37, 24);
+            this.LabelUnit.Size = new System.Drawing.Size(39, 24);
             this.LabelUnit.TabIndex = 6;
             this.LabelUnit.Text = "MB";
             this.LabelUnit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // TextBoxSize
             // 
-            this.TextBoxSize.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.TextBoxSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel.SetColumnSpan(this.TextBoxSize, 3);
             this.TextBoxSize.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.TextBoxSize.Location = new System.Drawing.Point(170, 137);
+            this.TextBoxSize.Location = new System.Drawing.Point(162, 130);
             this.TextBoxSize.Name = "TextBoxSize";
-            this.TextBoxSize.Size = new System.Drawing.Size(143, 31);
+            this.TextBoxSize.Size = new System.Drawing.Size(165, 31);
             this.TextBoxSize.TabIndex = 5;
             this.TextBoxSize.TextChanged += new System.EventHandler(this.TEXTBOX_SIZE_TEXT_CHANGED);
             this.TextBoxSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TEXTBOX_SIZE_KEYPRESS);
             // 
             // LabelSize
             // 
-            this.LabelSize.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.LabelSize.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.LabelSize.AutoSize = true;
-            this.LabelSize.Location = new System.Drawing.Point(78, 140);
+            this.LabelSize.Location = new System.Drawing.Point(70, 133);
             this.LabelSize.Name = "LabelSize";
             this.LabelSize.Size = new System.Drawing.Size(86, 24);
             this.LabelSize.TabIndex = 1;
@@ -157,38 +162,65 @@ namespace Auto7z_Rev
             // 
             // ButtonConfig
             // 
-            this.ButtonConfig.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.ButtonConfig.Location = new System.Drawing.Point(296, 382);
+            this.ButtonConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel.SetColumnSpan(this.ButtonConfig, 3);
+            this.ButtonConfig.Location = new System.Drawing.Point(276, 386);
             this.ButtonConfig.Name = "ButtonConfig";
-            this.ButtonConfig.Size = new System.Drawing.Size(170, 50);
+            this.tableLayoutPanel.SetRowSpan(this.ButtonConfig, 2);
+            this.ButtonConfig.Size = new System.Drawing.Size(186, 45);
             this.ButtonConfig.TabIndex = 10;
             this.ButtonConfig.Text = "保存配置";
             this.ButtonConfig.UseVisualStyleBackColor = true;
             this.ButtonConfig.Click += new System.EventHandler(this.BUTTON_CONFIG_CLICK);
             // 
-            // MainPanel
+            // tableLayoutPanel
             // 
-            this.MainPanel.Controls.Add(this.CheckBoxAutoSave);
-            this.MainPanel.Controls.Add(this.MenuStrip);
-            this.MainPanel.Controls.Add(this.ButtonConfig);
-            this.MainPanel.Controls.Add(this.TextBoxSize);
-            this.MainPanel.Controls.Add(this.LabelSize);
-            this.MainPanel.Controls.Add(this.ComboBoxFormat);
-            this.MainPanel.Controls.Add(this.LabelUnit);
-            this.MainPanel.Controls.Add(this.CheckBoxZstd);
-            this.MainPanel.Controls.Add(this.TextBoxPassword);
-            this.MainPanel.Controls.Add(this.LabelPassword);
-            this.MainPanel.Controls.Add(this.LabelFormat);
-            this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MainPanel.Location = new System.Drawing.Point(0, 0);
-            this.MainPanel.Name = "MainPanel";
-            this.MainPanel.Size = new System.Drawing.Size(478, 444);
-            this.MainPanel.TabIndex = 1;
+            this.tableLayoutPanel.ColumnCount = 9;
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tableLayoutPanel.Controls.Add(this.MenuStrip, 0, 0);
+            this.tableLayoutPanel.Controls.Add(this.CheckBoxAutoSave, 1, 9);
+            this.tableLayoutPanel.Controls.Add(this.LabelUnit, 6, 3);
+            this.tableLayoutPanel.Controls.Add(this.CheckBoxZstd, 6, 5);
+            this.tableLayoutPanel.Controls.Add(this.LabelPassword, 2, 7);
+            this.tableLayoutPanel.Controls.Add(this.LabelFormat, 2, 5);
+            this.tableLayoutPanel.Controls.Add(this.LabelSize, 2, 3);
+            this.tableLayoutPanel.Controls.Add(this.ButtonConfig, 5, 8);
+            this.tableLayoutPanel.Controls.Add(this.TextBoxSize, 3, 3);
+            this.tableLayoutPanel.Controls.Add(this.ComboBoxFormat, 3, 5);
+            this.tableLayoutPanel.Controls.Add(this.TextBoxPassword, 3, 7);
+            this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel.Name = "tableLayoutPanel";
+            this.tableLayoutPanel.RowCount = 11;
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tableLayoutPanel.Size = new System.Drawing.Size(478, 444);
+            this.tableLayoutPanel.TabIndex = 2;
             // 
             // MenuStrip
             // 
+            this.MenuStrip.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.MenuStrip.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.MenuStrip.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
+            this.tableLayoutPanel.SetColumnSpan(this.MenuStrip, 9);
+            this.MenuStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.MenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.LanguageMenu,
@@ -197,7 +229,7 @@ namespace Auto7z_Rev
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
             this.MenuStrip.Size = new System.Drawing.Size(478, 32);
-            this.MenuStrip.TabIndex = 10;
+            this.MenuStrip.TabIndex = 14;
             this.MenuStrip.Text = "menuStrip1";
             // 
             // LanguageMenu
@@ -285,8 +317,8 @@ namespace Auto7z_Rev
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(478, 444);
-            this.Controls.Add(this.MainPanel);
-            this.Font = new System.Drawing.Font("微软雅黑 Light", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Controls.Add(this.tableLayoutPanel);
+            this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Auto7zMainForm";
@@ -296,9 +328,8 @@ namespace Auto7z_Rev
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MAINFORM_DRAGDROP);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MAINFORM_DRAGENTER);
             this.DragLeave += new System.EventHandler(this.MAINFORM_DRAGLEAVE);
-            this.Resize += new System.EventHandler(this.AUTO7Z_MAINFORM_RESIZE);
-            this.MainPanel.ResumeLayout(false);
-            this.MainPanel.PerformLayout();
+            this.tableLayoutPanel.ResumeLayout(false);
+            this.tableLayoutPanel.PerformLayout();
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -316,7 +347,7 @@ namespace Auto7z_Rev
         private System.Windows.Forms.TextBox TextBoxPassword;
         private System.Windows.Forms.Button ButtonConfig;
         private System.Windows.Forms.CheckBox CheckBoxAutoSave;
-        private System.Windows.Forms.Panel MainPanel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
         private System.Windows.Forms.MenuStrip MenuStrip;
         private System.Windows.Forms.ToolStripMenuItem LanguageMenu;
         private System.Windows.Forms.ToolStripMenuItem LanguageMenuSelect;

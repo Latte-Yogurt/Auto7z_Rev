@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace Auto7z_Rev
@@ -56,10 +57,38 @@ namespace Auto7z_Rev
 
         private void UpdateLanguage()
         {
-            Text = languageTexts[Parameters.currentLanguage]["Title"];
             LinkLabelGitHub.Text = languageTexts[Parameters.currentLanguage]["LinkLabelGitHub"];
             LinkLabelLicense.Text = languageTexts[Parameters.currentLanguage]["LinkLabelLicense"];
             ButtonConfirm.Text = languageTexts[Parameters.currentLanguage]["ButtonConfirm"];
+
+            if (GET_VERSION() != "N/A")
+            {
+                Text = languageTexts[Parameters.currentLanguage]["Title"] + " " + GET_VERSION();
+            }
+
+            else
+            {
+                Text = languageTexts[Parameters.currentLanguage]["Title"];
+            }
+        }
+
+        private string GET_VERSION()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            AssemblyFileVersionAttribute fileVersionAttribute = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
+
+            if (fileVersionAttribute != null)
+            {
+                string fileVersion = fileVersionAttribute.Version;
+
+                if (Version.TryParse(fileVersion, out Version versionObject))
+                {
+                    return "v" + versionObject.ToString(3);
+                }
+            }
+
+            // 如果无法获取文件版本属性或解析失败，返回一个默认值或空字符串
+            return "N/A";
         }
 
         private void GITHUB_LABEL_LINK_CLICKED(object sender, LinkLabelLinkClickedEventArgs e)

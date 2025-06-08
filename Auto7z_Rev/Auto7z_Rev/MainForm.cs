@@ -34,8 +34,8 @@ namespace Auto7z_Rev
             public static bool hasPermission { get; set; }
             public static bool packedOneFile { get; set; }
             public static bool isHandleSeparately { get; set; } // 标记符意思为是否将文件进行合并处理
-            public static float systemScale { get; set; }
             public static string currentLanguage { get; set; }
+            public static float systemScale { get; set; }
             public static int newScreenWidth { get; set; }
             public static int newScreenHeight { get; set; }
             public static float newSystemScale { get; set; }
@@ -451,25 +451,6 @@ namespace Auto7z_Rev
             DEFAULT_ZSTD();
             DEFAULT_PASSWORD_TEXTBOX();
             DEFAULT_AUTOSAVE();
-        }
-
-        private void INITIALIZE_COMPONENTS_POSITION()
-        {
-            LabelFormat.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 - LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - LabelFormat.Height / 2);
-            ComboBoxFormat.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 + LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - ComboBoxFormat.Height / 2 - (int)(1.0f * Parameters.systemScale));
-            CheckBoxZstd.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 + LabelFormat.Width / 2 + (int)(5.0f * Parameters.systemScale) - (int)(20.0f * Parameters.systemScale) + ComboBoxFormat.Width, MainPanel.Height / 2 - CheckBoxZstd.Height / 2 + (int)(1.0f * Parameters.systemScale));
-
-            LabelSize.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 - LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - LabelFormat.Height / 2 - this.Height / 6);
-            TextBoxSize.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 + LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - ComboBoxFormat.Height / 2 - this.Height / 6);
-            LabelUnit.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 + LabelFormat.Width / 2 + (int)(5.0f * Parameters.systemScale) - (int)(20.0f * Parameters.systemScale) + TextBoxSize.Width, MainPanel.Height / 2 - ComboBoxFormat.Height / 2 - this.Height / 6 + (int)(3.0f * Parameters.systemScale));
-
-            LabelPassword.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 - LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - LabelFormat.Height / 2 + this.Height / 6);
-            TextBoxPassword.Location = new Point(MainPanel.Width / 2 - ComboBoxFormat.Width / 2 + LabelFormat.Width / 2 - (int)(20.0f * Parameters.systemScale), MainPanel.Height / 2 - ComboBoxFormat.Height / 2 + this.Height / 6);
-
-            CheckBoxAutoSave.Location = new Point((int)(20.0f * Parameters.systemScale), MainPanel.Height - CheckBoxAutoSave.Height - (int)(15.0f * Parameters.systemScale));
-            ButtonConfig.Location = new Point(MainPanel.Width - ButtonConfig.Width - (int)(10.0f * Parameters.systemScale), MainPanel.Height - ButtonConfig.Height - (int)(10.0f * Parameters.systemScale));
-
-            ButtonConfig.Size = new Size((int)(120.0f * Parameters.systemScale), (int)(30.0f * Parameters.systemScale));
         }
 
         private void INITIALIZE_COMPONENTS_SIZE()
@@ -2861,6 +2842,7 @@ namespace Auto7z_Rev
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Language", $"{Parameters.currentLanguage}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "ScreenWidth", $"{width}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "ScreenHeight", $"{height}");
+            UPDATE_CONFIG($"{Parameters.xmlPath}", "SystemScale", $"{Parameters.systemScale}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Volume", $"{Parameters.volume}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Format", $"{Parameters.format}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Password", $"{Parameters.password}");
@@ -2897,7 +2879,6 @@ namespace Auto7z_Rev
         {
             Parameters.currentLanguage = "zh-CN";
             UpdateLanguage();
-            INITIALIZE_COMPONENTS_POSITION();
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Language", $"{Parameters.currentLanguage}");
         }
 
@@ -2905,7 +2886,6 @@ namespace Auto7z_Rev
         {
             Parameters.currentLanguage = "zh-TW";
             UpdateLanguage();
-            INITIALIZE_COMPONENTS_POSITION();
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Language", $"{Parameters.currentLanguage}");
         }
 
@@ -2913,7 +2893,6 @@ namespace Auto7z_Rev
         {
             Parameters.currentLanguage = "en-US";
             UpdateLanguage();
-            INITIALIZE_COMPONENTS_POSITION();
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Language", $"{Parameters.currentLanguage}");
         }
 
@@ -3135,13 +3114,7 @@ namespace Auto7z_Rev
                 Location = new Point(locationX, locationY);
             }
 
-            INITIALIZE_COMPONENTS_POSITION();
             INITIALIZE_COMPONENTS_SIZE();
-        }
-
-        private void AUTO7Z_MAINFORM_RESIZE(object sender, EventArgs e)
-        {
-            INITIALIZE_COMPONENTS_POSITION();
         }
 
         private void AUTO7Z_MAINFORM_FORM_CLOSING(object sender, FormClosingEventArgs e)
