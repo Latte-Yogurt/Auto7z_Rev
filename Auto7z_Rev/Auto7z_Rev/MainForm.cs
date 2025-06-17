@@ -587,7 +587,26 @@ namespace Auto7z_Rev
         private bool IS_PROCESS_RUNNING(string processName)
         {
             Process[] processes = Process.GetProcessesByName(processName);
-            return processes.Length > 0; // 如果找到进程，则返回 true
+
+            foreach (Process p in processes)
+            {
+                try
+                {
+                    // 检查进程的可执行文件路径是否与组件路径匹配
+                    if (p.MainModule.FileName.Equals(Parameters.sevenZExePath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true; // 找到了一个正在运行的进程，并且路径正确
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    ERROR_EXCEPTION_MESSAGE(ex);
+                    return false;
+                }
+            }
+
+            return false; // 没有找到路径正确的正在运行的进程
         }
 
         private string[] GET_DIRECTOR_CONTENTS(string dirPath)

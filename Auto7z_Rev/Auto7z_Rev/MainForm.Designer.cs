@@ -60,7 +60,7 @@ namespace Auto7z_Rev
             // 
             this.TextBoxPassword.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel.SetColumnSpan(this.TextBoxPassword, 3);
-            this.TextBoxPassword.Location = new System.Drawing.Point(184, 290);
+            this.TextBoxPassword.Location = new System.Drawing.Point(186, 290);
             this.TextBoxPassword.Name = "TextBoxPassword";
             this.TextBoxPassword.Size = new System.Drawing.Size(146, 31);
             this.TextBoxPassword.TabIndex = 9;
@@ -83,7 +83,7 @@ namespace Auto7z_Rev
             // 
             this.LabelPassword.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.LabelPassword.AutoSize = true;
-            this.LabelPassword.Location = new System.Drawing.Point(92, 294);
+            this.LabelPassword.Location = new System.Drawing.Point(94, 294);
             this.LabelPassword.Name = "LabelPassword";
             this.LabelPassword.Size = new System.Drawing.Size(86, 24);
             this.LabelPassword.TabIndex = 4;
@@ -94,7 +94,7 @@ namespace Auto7z_Rev
             // 
             this.LabelFormat.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.LabelFormat.AutoSize = true;
-            this.LabelFormat.Location = new System.Drawing.Point(92, 210);
+            this.LabelFormat.Location = new System.Drawing.Point(94, 210);
             this.LabelFormat.Name = "LabelFormat";
             this.LabelFormat.Size = new System.Drawing.Size(86, 24);
             this.LabelFormat.TabIndex = 2;
@@ -108,7 +108,7 @@ namespace Auto7z_Rev
             this.ComboBoxFormat.Cursor = System.Windows.Forms.Cursors.Default;
             this.ComboBoxFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxFormat.FormattingEnabled = true;
-            this.ComboBoxFormat.Location = new System.Drawing.Point(184, 209);
+            this.ComboBoxFormat.Location = new System.Drawing.Point(186, 209);
             this.ComboBoxFormat.Name = "ComboBoxFormat";
             this.ComboBoxFormat.Size = new System.Drawing.Size(146, 32);
             this.ComboBoxFormat.TabIndex = 7;
@@ -118,7 +118,7 @@ namespace Auto7z_Rev
             // 
             this.CheckBoxZstd.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.CheckBoxZstd.AutoSize = true;
-            this.CheckBoxZstd.Location = new System.Drawing.Point(336, 208);
+            this.CheckBoxZstd.Location = new System.Drawing.Point(338, 208);
             this.CheckBoxZstd.Name = "CheckBoxZstd";
             this.CheckBoxZstd.Size = new System.Drawing.Size(72, 28);
             this.CheckBoxZstd.TabIndex = 8;
@@ -130,7 +130,7 @@ namespace Auto7z_Rev
             // 
             this.LabelUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.LabelUnit.AutoSize = true;
-            this.LabelUnit.Location = new System.Drawing.Point(336, 126);
+            this.LabelUnit.Location = new System.Drawing.Point(338, 126);
             this.LabelUnit.Name = "LabelUnit";
             this.LabelUnit.Size = new System.Drawing.Size(39, 24);
             this.LabelUnit.TabIndex = 6;
@@ -142,7 +142,7 @@ namespace Auto7z_Rev
             this.TextBoxSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel.SetColumnSpan(this.TextBoxSize, 3);
             this.TextBoxSize.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.TextBoxSize.Location = new System.Drawing.Point(184, 122);
+            this.TextBoxSize.Location = new System.Drawing.Point(186, 122);
             this.TextBoxSize.Name = "TextBoxSize";
             this.TextBoxSize.Size = new System.Drawing.Size(146, 31);
             this.TextBoxSize.TabIndex = 5;
@@ -153,7 +153,7 @@ namespace Auto7z_Rev
             // 
             this.LabelSize.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.LabelSize.AutoSize = true;
-            this.LabelSize.Location = new System.Drawing.Point(92, 126);
+            this.LabelSize.Location = new System.Drawing.Point(94, 126);
             this.LabelSize.Name = "LabelSize";
             this.LabelSize.Size = new System.Drawing.Size(86, 24);
             this.LabelSize.TabIndex = 1;
@@ -164,7 +164,7 @@ namespace Auto7z_Rev
             // 
             this.ButtonConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel.SetColumnSpan(this.ButtonConfig, 3);
-            this.ButtonConfig.Location = new System.Drawing.Point(286, 388);
+            this.ButtonConfig.Location = new System.Drawing.Point(289, 388);
             this.ButtonConfig.Name = "ButtonConfig";
             this.tableLayoutPanel.SetRowSpan(this.ButtonConfig, 2);
             this.ButtonConfig.Size = new System.Drawing.Size(175, 45);
@@ -221,6 +221,7 @@ namespace Auto7z_Rev
             this.MenuStrip.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.tableLayoutPanel.SetColumnSpan(this.MenuStrip, 9);
             this.MenuStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.MenuStrip.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.MenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.LanguageMenu,
