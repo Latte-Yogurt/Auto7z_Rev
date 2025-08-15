@@ -25,7 +25,7 @@ namespace Auto7z_Rev
             public readonly static string xmlPath = Path.Combine(workPath, "Auto7z_Rev.xml");
             public readonly static string auto7zPath = Path.Combine(extractPath, "Auto7z_Components");
             public readonly static string sevenZPath = Path.Combine(auto7zPath, "7z");
-            public readonly static string md5CalculaterPath = Path.Combine(auto7zPath, "MD5Calculater.exe");
+            public readonly static string md5CalculatorPath = Path.Combine(auto7zPath, "md5Calculator.exe");
             public readonly static string sevenZExePath = Path.Combine(sevenZPath, "7z.exe");
             public readonly static string sevenZDllPath = Path.Combine(sevenZPath, "7z.dll");
             public readonly static string langPath = Path.Combine(sevenZPath, "Lang");
@@ -186,7 +186,7 @@ namespace Auto7z_Rev
 
                         if (Parameters.generateMd5 && Directory.Exists(Parameters.newFolderPath))
                         {
-                            GENERATE_MD5(Parameters.md5CalculaterPath, Parameters.newFolderPath);
+                            GENERATE_MD5(Parameters.md5CalculatorPath, Parameters.newFolderPath);
                         }
 
                         ADD_SEVENZ_USAGE_COUNT();
@@ -239,7 +239,7 @@ namespace Auto7z_Rev
 
                         if (Parameters.generateMd5 && Directory.Exists(Parameters.newFolderPath))
                         {
-                            GENERATE_MD5(Parameters.md5CalculaterPath, Parameters.newFolderPath);
+                            GENERATE_MD5(Parameters.md5CalculatorPath, Parameters.newFolderPath);
                         }
 
                         ADD_SEVENZ_USAGE_COUNT();
@@ -293,7 +293,7 @@ namespace Auto7z_Rev
 
                             if (Parameters.generateMd5 && Directory.Exists(Parameters.newFolderPath))
                             {
-                                GENERATE_MD5(Parameters.md5CalculaterPath, Parameters.newFolderPath);
+                                GENERATE_MD5(Parameters.md5CalculatorPath, Parameters.newFolderPath);
                             }
 
                             ADD_SEVENZ_USAGE_COUNT();
@@ -337,7 +337,7 @@ namespace Auto7z_Rev
 
                             if (Parameters.generateMd5 && Directory.Exists(Parameters.newFolderPath))
                             {
-                                GENERATE_MD5(Parameters.md5CalculaterPath, Parameters.newFolderPath);
+                                GENERATE_MD5(Parameters.md5CalculatorPath, Parameters.newFolderPath);
                             }
 
                             ADD_SEVENZ_USAGE_COUNT();
@@ -687,9 +687,9 @@ namespace Auto7z_Rev
                 {
                     CHECK_FOLDER_LEGAL(Parameters.auto7zPath);
 
-                    if (!File.Exists(Parameters.md5CalculaterPath))
+                    if (!File.Exists(Parameters.md5CalculatorPath))
                     {
-                        CREATE_MD5_CALCULATER_EXE();
+                        CREATE_MD5_CALCULATOR_EXE();
                     }
 
                     if (!Directory.Exists(Parameters.sevenZPath))
@@ -765,9 +765,9 @@ namespace Auto7z_Rev
             }
         }
 
-        private void CREATE_MD5_CALCULATER_EXE()
+        private void CREATE_MD5_CALCULATOR_EXE()
         {
-            string resourceName = "Auto7z_Rev.Resources.MD5Calculater.exe";
+            string resourceName = "Auto7z_Rev.Resources.MD5Calculator.exe";
             string outputFileName = resourceName.Replace("Auto7z_Rev.Resources.", "");
             string outputPath = Path.Combine(Parameters.auto7zPath, outputFileName);
             EXTRACT_RESOURCE(resourceName, outputPath);

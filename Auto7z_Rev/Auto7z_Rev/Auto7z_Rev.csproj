@@ -103,7 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Escoffier.ico" />
-    <EmbeddedResource Include="Resources\MD5Calculater.exe" />
+    <EmbeddedResource Include="Resources\MD5Calculator.exe" />
     <EmbeddedResource Include="Resources\sevenz\7z.dll" />
     <EmbeddedResource Include="Resources\sevenz\7z.exe" />
     <EmbeddedResource Include="Resources\sevenz\Lang\zh-cn.txt" />
