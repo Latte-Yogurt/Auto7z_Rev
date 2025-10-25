@@ -120,7 +120,7 @@ namespace MD5Calculator
 					string[] fileInDirectoryPaths = null;
 					long sizeBytes = GET_SINGLE_FILE_SIZE(filePath);
 
-					string md5FileName = $"{Path.GetFileNameWithoutExtension(filePath)}.md5";
+					string md5FileName = File.Exists(filePath) ? $"{Path.GetFileNameWithoutExtension(filePath)}.md5" : $"{Path.GetFileName(filePath)}.md5";
 					string md5Path = File.Exists(filePath) ? Path.Combine(Path.GetDirectoryName(filePath), md5FileName) : Path.Combine(filePath, md5FileName);
 
 					if (Directory.Exists(filePath))
@@ -178,7 +178,7 @@ namespace MD5Calculator
 							string[] fileInDirectoryPaths = null;
 							long sizeBytes = GET_SINGLE_FILE_SIZE(filePath);
 
-							string md5FileName = $"{Path.GetFileNameWithoutExtension(filePath)}.md5";
+							string md5FileName = File.Exists(filePath) ? $"{Path.GetFileNameWithoutExtension(filePath)}.md5" : $"{Path.GetFileName(filePath)}.md5";
 							string md5Path = File.Exists(filePath) ? Path.Combine(Path.GetDirectoryName(filePath), md5FileName) : Path.Combine(filePath, md5FileName);
 
 							if (Directory.Exists(filePath))
