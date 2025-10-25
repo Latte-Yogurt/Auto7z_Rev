@@ -137,7 +137,7 @@ namespace Auto7z_Rev
                     string[] filePaths = !Parameters.packedOneFile ? new string[] { Path.GetFullPath(args[0]) } : args;
                     string[] newFilePaths = null;
 
-                    Parameters.fileName = Path.GetFileNameWithoutExtension(Path.GetFullPath(args[0]));
+                    Parameters.fileName = File.Exists(args[0]) ? Path.GetFileNameWithoutExtension(Path.GetFullPath(args[0])) : Path.GetFileName(Path.GetFullPath(args[0]));
                     Parameters.directoryPath = Path.GetDirectoryName(Path.GetFullPath(args[0]));
 
                     bool isFileInUse = IS_FILE_IN_USE(filePaths, out Exception ex);
@@ -249,10 +249,40 @@ namespace Auto7z_Rev
 
                 else
                 {
+                    var processedFileNamesMap = new Dictionary<string, string>();
+                    var fileNameCounts = new Dictionary<string, int>();
+
+                    foreach (var file in args)
+                    {
+                        string fullPath = Path.GetFullPath(file);
+                        string baseName = File.Exists(fullPath) ? Path.GetFileNameWithoutExtension(fullPath) : Path.GetFileName(fullPath);
+
+                        string processingKey = baseName;
+                        string finalBaseName = baseName;
+
+                        if (fileNameCounts.ContainsKey(processingKey))
+                        {
+                            fileNameCounts[processingKey]++;
+                        }
+                        else
+                        {
+                            fileNameCounts.Add(processingKey, 1);
+                        }
+
+                        int currentCount = fileNameCounts[processingKey];
+
+                        if (currentCount > 1)
+                        {
+                            finalBaseName = $"{baseName}({currentCount - 1})";
+                        }
+
+                        processedFileNamesMap.Add(fullPath, finalBaseName);
+                    }
+
                     foreach (var singleFilePath in args)
                     {
                         Parameters.filePath = Path.GetFullPath(singleFilePath);
-                        Parameters.fileName = Path.GetFileNameWithoutExtension(Parameters.filePath);
+                        Parameters.fileName = processedFileNamesMap[Parameters.filePath];
                         Parameters.directoryPath = Path.GetDirectoryName(Parameters.filePath);
 
                         bool isFileInUse = IS_FILE_IN_USE(new string[] { Parameters.filePath }, out Exception ex);
@@ -260,14 +290,14 @@ namespace Auto7z_Rev
                         if (isFileInUse)
                         {
                             WRANING_FILE_IN_USE(Parameters.fileName, ex);
-                            return;
+                            continue;
                         }
 
                         bool getSizeSuccess = GET_SINGLE_FILE_SIZE(Parameters.filePath);
 
                         if (!getSizeSuccess)
                         {
-                            return;
+                            continue;
                         }
 
                         if (Parameters.format == "7z" || Parameters.format == "zip")
@@ -1158,7 +1188,7 @@ namespace Auto7z_Rev
         private bool GET_SINGLE_FILE_SIZE(string path)
         {
             string fullPath = Path.GetFullPath(path);
-            string name = Path.GetFileNameWithoutExtension(fullPath);
+            string name = File.Exists(fullPath) ? Path.GetFileNameWithoutExtension(fullPath) : Path.GetFileName(fullPath);
             string dirertory = Path.GetDirectoryName(fullPath);
 
             if (File.Exists(fullPath))
@@ -1214,7 +1244,7 @@ namespace Auto7z_Rev
             foreach (var path in paths)
             {
                 string fullPath = Path.GetFullPath(path);
-                string name = Path.GetFileNameWithoutExtension(fullPath);
+                string name = File.Exists(fullPath) ? Path.GetFileNameWithoutExtension(fullPath) : Path.GetFileName(fullPath);
                 string dirertory = Path.GetDirectoryName(fullPath);
 
                 if (File.Exists(fullPath))
