@@ -108,7 +108,7 @@ namespace Auto7z_Rev
             this.ComboBoxFormat.Cursor = System.Windows.Forms.Cursors.Default;
             this.ComboBoxFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxFormat.FormattingEnabled = true;
-            this.ComboBoxFormat.Location = new System.Drawing.Point(186, 209);
+            this.ComboBoxFormat.Location = new System.Drawing.Point(186, 206);
             this.ComboBoxFormat.Name = "ComboBoxFormat";
             this.ComboBoxFormat.Size = new System.Drawing.Size(146, 32);
             this.ComboBoxFormat.TabIndex = 7;

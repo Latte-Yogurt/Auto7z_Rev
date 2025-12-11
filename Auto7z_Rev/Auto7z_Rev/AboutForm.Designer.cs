@@ -114,7 +114,7 @@ namespace Auto7z_Rev
             this.LabelCopyRight.Name = "LabelCopyRight";
             this.LabelCopyRight.Size = new System.Drawing.Size(852, 58);
             this.LabelCopyRight.TabIndex = 2;
-            this.LabelCopyRight.Text = "Copyright© 2024-2025 LatteYogurt , All rights reserved.";
+            this.LabelCopyRight.Text = "Copyright© 2024 LatteYogurt , All rights reserved.";
             this.LabelCopyRight.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LinkLabelGitHub

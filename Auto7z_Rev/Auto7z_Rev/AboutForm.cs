@@ -114,12 +114,32 @@ namespace Auto7z_Rev
             Close();
         }
 
+        private void COPYRIGHT_REFRESH()
+        {
+            int startYear = 2024;
+            int currentYear = DateTime.Now.Year;
+            string copyrightText;
+
+            if (currentYear == startYear)
+            {
+                copyrightText = $"Copyright© {startYear} LatteYogurt , All rights reserved.";
+            }
+
+            else
+            {
+                copyrightText = $"Copyright© {startYear}-{currentYear} LatteYogurt , All rights reserved.";
+            }
+
+            LabelCopyRight.Text = copyrightText;
+        }
+
         private void ABOUT_FORM_LOAD(object sender, EventArgs e)
         {
-            int locationX = Screen.PrimaryScreen.Bounds.Width / 2 - this.Width / 2;
-            int locationY = Screen.PrimaryScreen.Bounds.Height / 2 - this.Height / 2;
+            int locationX = Screen.PrimaryScreen.Bounds.Width / 2 - Width / 2;
+            int locationY = Screen.PrimaryScreen.Bounds.Height / 2 - Height / 2;
 
-            this.Location = new Point(locationX, locationY);
+            Location = new Point(locationX, locationY);
+            COPYRIGHT_REFRESH();
         }
     }
 }
