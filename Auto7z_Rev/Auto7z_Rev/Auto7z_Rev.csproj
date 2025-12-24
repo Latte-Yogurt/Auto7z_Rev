@@ -97,6 +97,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Resources\Auto7z_Rev.exe.config" />
+    <EmbeddedResource Include="Resources\MD5Calculator.exe.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

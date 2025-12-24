@@ -23,9 +23,11 @@ namespace Auto7z_Rev
             public readonly static string workPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             public readonly static string extractPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             public readonly static string xmlPath = Path.Combine(workPath, "Auto7z_Rev.xml");
+            public readonly static string appConfigPath = Path.Combine(workPath, "Auto7z_Rev.exe.config");
             public readonly static string auto7zPath = Path.Combine(extractPath, "Auto7z_Components");
             public readonly static string sevenZPath = Path.Combine(auto7zPath, "7z");
             public readonly static string md5CalculatorPath = Path.Combine(auto7zPath, "md5Calculator.exe");
+            public readonly static string MD5CalculatorAppConfigPath = Path.Combine(Parameters.auto7zPath, "MD5Calculator.exe.config");
             public readonly static string sevenZExePath = Path.Combine(sevenZPath, "7z.exe");
             public readonly static string sevenZDllPath = Path.Combine(sevenZPath, "7z.dll");
             public readonly static string langPath = Path.Combine(sevenZPath, "Lang");
@@ -67,6 +69,23 @@ namespace Auto7z_Rev
             private readonly static string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             private readonly static string logFileName = "Auto7z.log";
             public readonly static string logFilePath = Path.Combine(desktopPath, logFileName);
+        }
+
+        protected override void OnDpiChanged(DpiChangedEventArgs e)
+        {
+            base.OnDpiChanged(e);
+
+            // 获取新的 DPI 缩放因子
+            float newScale = e.DeviceDpiNew / 96.0f;
+            Bounds = e.SuggestedRectangle;
+            Parameters.systemScale = newScale;
+
+            INITIALIZE_MAINFORM_SIZE(newScale);
+            UPDATE_MENUSTRIP_LAYOUT(newScale);
+
+            // 强制重绘界面以适应新 DPI 下的字体和控件
+            Invalidate();
+            Update();
         }
 
         #region MainForm Function
@@ -120,7 +139,7 @@ namespace Auto7z_Rev
             {
                 if (args.Length > 1)
                 {
-                    QUESTION_PACKED_IN_ONE_FILE();
+                    Parameters.packedOneFile=QUESTION_PACKED_IN_ONE_FILE();
                     Parameters.isHandleSeparately = !Parameters.packedOneFile;
                 }
 
@@ -485,12 +504,98 @@ namespace Auto7z_Rev
             DEFAULT_AUTOSAVE();
         }
 
-        private void INITIALIZE_COMPONENTS_SIZE()
+        private void INITIALIZE_MAINFORM_SIZE(float scale)
         {
+            // 设置自动缩放模式
             AutoScaleMode = AutoScaleMode.Dpi;
-            MinimumSize = new Size((int)(20 * Parameters.systemScale) + CheckBoxAutoSave.Width + (int)(20 * Parameters.systemScale) + ButtonConfig.Width + (int)(20 * Parameters.systemScale), (int)(20 * Parameters.systemScale) + CheckBoxAutoSave.Width + (int)(20 * Parameters.systemScale) + ButtonConfig.Width + (int)(20 * Parameters.systemScale));
+
+            MinimumSize = new Size(0, 0);
             MaximumSize = MinimumSize;
-            Size = MinimumSize;
+            UPDATE_MIN_MAX_SIZE(scale);
+
+            float baseWidth = 320f;
+            float baseHeight = 320f;
+            Size = new Size((int)(baseWidth * scale), (int)(baseHeight * scale));
+
+            INITIALIZE_TABLE_LAYOUT_PANEL_PIXEL();
+        }
+
+        private void UPDATE_MIN_MAX_SIZE(float scale)
+        {
+            int width = (int)(320 * scale);
+            int height = (int)(320 * scale);
+            MinimumSize = new Size(width, height);
+            MaximumSize = MinimumSize;
+        }
+
+        private void INITIALIZE_TABLE_LAYOUT_PANEL_PIXEL()
+        {
+            // tableLayoutPanel的索引从0开始，即第一行或列的索引号为0
+            // tableLayoutPanel的cell指定为先列后行，例如cell=0,1即为第一列第二行
+
+            // 对列的定义
+            SET_COLUMN_SIZE(tableLayoutPanel, 0, SizeType.Absolute, 10f);
+            SET_COLUMN_SIZE(tableLayoutPanel, 1, SizeType.Percent, 12f);
+            SET_COLUMN_SIZE(tableLayoutPanel, 2, SizeType.Percent, 25f);
+            SET_COLUMN_SIZE(tableLayoutPanel, 3, SizeType.Percent, 12f);
+            SET_COLUMN_SIZE(tableLayoutPanel, 4, SizeType.Percent, 12f);
+            SET_COLUMN_SIZE(tableLayoutPanel, 5, SizeType.Percent, 12f);
+            SET_COLUMN_SIZE(tableLayoutPanel, 6, SizeType.Percent, 22f);
+            SET_COLUMN_SIZE(tableLayoutPanel, 7, SizeType.Percent, 5f);
+            SET_COLUMN_SIZE(tableLayoutPanel, 8, SizeType.Absolute, 10f);
+
+            // 对行的定义
+            SET_ROW_SIZE(tableLayoutPanel, 0, SizeType.Percent, 10f);
+            SET_ROW_SIZE(tableLayoutPanel, 1, SizeType.Absolute, 10f);
+            SET_ROW_SIZE(tableLayoutPanel, 2, SizeType.Percent, 16f);
+            SET_ROW_SIZE(tableLayoutPanel, 3, SizeType.Percent, 16f);
+            SET_ROW_SIZE(tableLayoutPanel, 4, SizeType.Absolute, 20f);
+            SET_ROW_SIZE(tableLayoutPanel, 5, SizeType.Percent, 16f);
+            SET_ROW_SIZE(tableLayoutPanel, 6, SizeType.Absolute, 20f);
+            SET_ROW_SIZE(tableLayoutPanel, 7, SizeType.Percent, 16f);
+            SET_ROW_SIZE(tableLayoutPanel, 8, SizeType.Percent, 15f);
+            SET_ROW_SIZE(tableLayoutPanel, 9, SizeType.Percent, 11f);
+            SET_ROW_SIZE(tableLayoutPanel, 10, SizeType.Absolute, 5f);
+        }
+
+        private void SET_COLUMN_SIZE(TableLayoutPanel panel,int num,SizeType type,float fontSize)
+        {
+            panel.ColumnStyles[num].SizeType = type;
+            panel.ColumnStyles[num].Width = fontSize;
+        }
+
+        private void SET_ROW_SIZE(TableLayoutPanel panel, int num, SizeType type, float fontSize)
+        {
+            panel.RowStyles[num].SizeType = type;
+            panel.RowStyles[num].Height = fontSize;
+        }
+
+        private void UPDATE_MENUSTRIP_LAYOUT(float scale)
+        {
+            if (MenuStrip != null)
+            {
+                int iconSize = (int)(16 * scale);
+                MenuStrip.ImageScalingSize = new Size(iconSize, iconSize);
+
+                foreach (ToolStripItem item in MenuStrip.Items)
+                {
+                    UPDATE_TOOL_STRIP_ITEM(item);
+                }
+            }
+        }
+
+        private void UPDATE_TOOL_STRIP_ITEM(ToolStripItem item)
+        {
+            item.Font = new Font(item.Font.FontFamily, Font.Size, item.Font.Style);
+
+            if (item is ToolStripMenuItem menuItem)
+            {
+                foreach (ToolStripItem subItem in menuItem.DropDownItems)
+                {
+                    // 递归调用自身
+                    UPDATE_TOOL_STRIP_ITEM(subItem);
+                }
+            }
         }
         #endregion
 
@@ -708,6 +813,11 @@ namespace Auto7z_Rev
 
             try
             {
+                if (!File.Exists(Parameters.appConfigPath))
+                {
+                    CREATE_APP_CONFIG();
+                }
+
                 if (!Directory.Exists(Parameters.auto7zPath))
                 {
                     CREATE_RESOURCE_FOLDER(Parameters.auto7zPath);
@@ -720,6 +830,11 @@ namespace Auto7z_Rev
                     if (!File.Exists(Parameters.md5CalculatorPath))
                     {
                         CREATE_MD5_CALCULATOR_EXE();
+                    }
+
+                    if (!File.Exists(Parameters.MD5CalculatorAppConfigPath))
+                    {
+                        CREATE_MD5CALCULATOR_APP_CONFIG();
                     }
 
                     if (!Directory.Exists(Parameters.sevenZPath))
@@ -795,9 +910,25 @@ namespace Auto7z_Rev
             }
         }
 
+        private void CREATE_APP_CONFIG()
+        {
+            string resourceName = "Auto7z_Rev.Resources.Auto7z_Rev.exe.config";
+            string outputFileName = resourceName.Replace("Auto7z_Rev.Resources.", "");
+            string outputPath = Path.Combine(Parameters.workPath, outputFileName);
+            EXTRACT_RESOURCE(resourceName, outputPath);
+        }
+
         private void CREATE_MD5_CALCULATOR_EXE()
         {
             string resourceName = "Auto7z_Rev.Resources.MD5Calculator.exe";
+            string outputFileName = resourceName.Replace("Auto7z_Rev.Resources.", "");
+            string outputPath = Path.Combine(Parameters.auto7zPath, outputFileName);
+            EXTRACT_RESOURCE(resourceName, outputPath);
+        }
+
+        private void CREATE_MD5CALCULATOR_APP_CONFIG()
+        {
+            string resourceName = "Auto7z_Rev.Resources.MD5Calculator.exe.config";
             string outputFileName = resourceName.Replace("Auto7z_Rev.Resources.", "");
             string outputPath = Path.Combine(Parameters.auto7zPath, outputFileName);
             EXTRACT_RESOURCE(resourceName, outputPath);
@@ -1167,13 +1298,13 @@ namespace Auto7z_Rev
         {
             if (Directory.Exists(dirPath))
             {
-                string file = $"{dirPath}\\{Parameters.fileName}.tar";
+                string tempTarFile = $"{dirPath}\\{Parameters.fileName}.tar";
 
-                if (File.Exists(file))
+                if (File.Exists(tempTarFile))
                 {
                     try
                     {
-                        File.Delete(file);
+                        File.Delete(tempTarFile);
                     }
                     catch (Exception ex)
                     {
@@ -1370,8 +1501,8 @@ namespace Auto7z_Rev
                 }
             }
 
-            int newLocationX = Screen.PrimaryScreen.Bounds.Width / 2 - Width / 2;
-            int newLocationY = Screen.PrimaryScreen.Bounds.Height / 2 - Height / 2;
+            int newLocationX = Screen.FromControl(this).Bounds.Width / 2 - Width / 2;
+            int newLocationY = Screen.FromControl(this).Bounds.Height / 2 - Height / 2;
 
             // 获取当前系统的显示语言
             var currentCulture = CultureInfo.CurrentUICulture;
@@ -1612,7 +1743,7 @@ namespace Auto7z_Rev
                 CREATE_DEFAULT_CONFIG(configFilePath);
             }
 
-            int newWidth = Screen.PrimaryScreen.Bounds.Width;
+            int newWidth = Screen.FromControl(this).Bounds.Width;
 
             XDocument xdoc;
 
@@ -1662,7 +1793,7 @@ namespace Auto7z_Rev
                 return 0;
             }
 
-            if (widthToInt == Screen.PrimaryScreen.Bounds.Width)
+            if (widthToInt == Screen.FromControl(this).Bounds.Width)
             {
                 return widthToInt;
             }
@@ -1677,7 +1808,7 @@ namespace Auto7z_Rev
                 CREATE_DEFAULT_CONFIG(configFilePath);
             }
 
-            int newHeight = Screen.PrimaryScreen.Bounds.Height;
+            int newHeight = Screen.FromControl(this).Bounds.Height;
 
             XDocument xdoc;
 
@@ -1727,7 +1858,7 @@ namespace Auto7z_Rev
                 return 0;
             }
 
-            if (heightToInt == Screen.PrimaryScreen.Bounds.Height)
+            if (heightToInt == Screen.FromControl(this).Bounds.Height)
             {
                 return heightToInt;
             }
@@ -1807,7 +1938,7 @@ namespace Auto7z_Rev
                 CREATE_DEFAULT_CONFIG(configFilePath);
             }
 
-            int newLocationX = Screen.PrimaryScreen.Bounds.Width / 2 - Size.Width / 2;
+            int newLocationX = Screen.FromControl(this).Bounds.Width / 2 - Size.Width / 2;
 
             XDocument xdoc;
 
@@ -1852,7 +1983,7 @@ namespace Auto7z_Rev
                 return newLocationX;
             }
 
-            if (locationXToInt > Screen.PrimaryScreen.Bounds.Width - Size.Width || locationXToInt < -10)
+            if (locationXToInt > Screen.FromControl(this).Bounds.Width - Size.Width || locationXToInt < -10)
             {
                 return newLocationX;
             }
@@ -1867,7 +1998,7 @@ namespace Auto7z_Rev
                 CREATE_DEFAULT_CONFIG(configFilePath);
             }
 
-            int newLocationY = Screen.PrimaryScreen.Bounds.Height / 2 - Size.Height / 2;
+            int newLocationY = Screen.FromControl(this).Bounds.Height / 2 - Size.Height / 2;
 
             XDocument xdoc;
 
@@ -1911,7 +2042,7 @@ namespace Auto7z_Rev
                 return newLocationY;
             }
 
-            if (locationYToInt > Screen.PrimaryScreen.Bounds.Height - Size.Height || locationYToInt < 0)
+            if (locationYToInt > Screen.FromControl(this).Bounds.Height - Size.Height || locationYToInt < 0)
             {
                 return newLocationY;
             }
@@ -2606,8 +2737,9 @@ namespace Auto7z_Rev
             }
         }
 
-        private void QUESTION_PACKED_IN_ONE_FILE()
+        private bool QUESTION_PACKED_IN_ONE_FILE()
         {
+            bool isPack;
             DialogResult result = DialogResult.None;
 
             switch (Parameters.currentLanguage)
@@ -2625,13 +2757,15 @@ namespace Auto7z_Rev
 
             if (result == DialogResult.Yes)
             {
-                Parameters.packedOneFile = true;
+                isPack = true;
             }
 
             else
             {
-                Parameters.packedOneFile = false;
+                isPack = false;
             }
+
+            return isPack;
         }
 
         private void NOTICE_CONFIG_SAVED()
@@ -2782,7 +2916,7 @@ namespace Auto7z_Rev
                     break;
             }
 
-            string message = $"没有获取到{name}的大小，传入的路径为{incomingPath}。";
+            string message = $"没有获取到{name}的大小，传入文件路径为{incomingPath}。";
             WRITE_MESSAGE_LOG(message);
         }
 
@@ -2887,8 +3021,8 @@ namespace Auto7z_Rev
         {
             CHECK_XML_LEGAL(Parameters.xmlPath);
 
-            int width = Screen.PrimaryScreen.Bounds.Width;
-            int height = Screen.PrimaryScreen.Bounds.Height;
+            int width = Screen.FromControl(this).Bounds.Width;
+            int height = Screen.FromControl(this).Bounds.Height;
 
             UPDATE_CONFIG($"{Parameters.xmlPath}", "Language", $"{Parameters.currentLanguage}");
             UPDATE_CONFIG($"{Parameters.xmlPath}", "ScreenWidth", $"{width}");
@@ -2977,6 +3111,7 @@ namespace Auto7z_Rev
         private void ABOUT_AUTO7Z_REV_CLICK(object sender, EventArgs e)
         {
             AboutForm aboutForm = new AboutForm();
+            aboutForm.StartPosition = FormStartPosition.CenterParent;
             aboutForm.ShowDialog();
         }
 
@@ -3149,7 +3284,7 @@ namespace Auto7z_Rev
             int locationX;
             int locationY;
 
-            if (Parameters.newScreenWidth == Screen.PrimaryScreen.Bounds.Width && Parameters.newScreenHeight == Screen.PrimaryScreen.Bounds.Height && Math.Abs(Parameters.newSystemScale - Parameters.systemScale) < epsilon)
+            if (Parameters.newScreenWidth == Screen.FromControl(this).Bounds.Width && Parameters.newScreenHeight == Screen.FromControl(this).Bounds.Height && Math.Abs(Parameters.newSystemScale - Parameters.systemScale) < epsilon)
             {
                 locationX = GET_LOCATION_X(Parameters.xmlPath);
                 locationY = GET_LOCATION_Y(Parameters.xmlPath);
@@ -3159,13 +3294,13 @@ namespace Auto7z_Rev
 
             else
             {
-                locationX = Screen.PrimaryScreen.Bounds.Width / 2 - Size.Width / 2;
-                locationY = Screen.PrimaryScreen.Bounds.Height / 2 - Size.Height / 2;
+                locationX = Screen.FromControl(this).Bounds.Width / 2 - Size.Width / 2;
+                locationY = Screen.FromControl(this).Bounds.Height / 2 - Size.Height / 2;
 
                 Location = new Point(locationX, locationY);
             }
 
-            INITIALIZE_COMPONENTS_SIZE();
+            INITIALIZE_MAINFORM_SIZE(Parameters.systemScale);
         }
 
         private void AUTO7Z_MAINFORM_SHOWN(object sender, EventArgs e)
