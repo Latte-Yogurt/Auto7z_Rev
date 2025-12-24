@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace MD5Calculator
     public partial class ProgressBarForm : Form
     {
 		private Dictionary<string, Dictionary<string, string>> languageTexts;
+		public readonly static string workPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+		public readonly static string appConfigPath = Path.Combine(workPath, "MD5Calculator.exe.config");
 
 		private readonly string currentLanguage;
 		private readonly string[] newArgs;
@@ -35,18 +38,44 @@ namespace MD5Calculator
 			}
 		}
 
+		protected override void OnDpiChanged(DpiChangedEventArgs e)
+		{
+			base.OnDpiChanged(e);
+
+			// 获取新的 DPI 缩放因子
+			float newScale = e.DeviceDpiNew / 96.0f;
+			Bounds = e.SuggestedRectangle;
+			systemScale = newScale;
+
+			INITIALIZE_MAINFORM_SIZE(newScale);
+
+			// 强制重绘界面以适应新 DPI 下的字体和控件
+			Invalidate();
+			Update();
+		}
+
 		public ProgressBarForm(string[] args)
         {
 			newArgs = args;
 			InitializeComponent();
-			INITIALIZE_MAINFORM_SIZE();
 
 			currentLanguage = GET_CURRENT_LANGUAGE();
 			systemScale = GET_SCALE();
+			INITIALIZE_MAINFORM_SIZE(systemScale);
 
 			InitializeLanguageTexts();
 			UpdateLanguage();
 			UpdateLabelText();
+
+			if (!CHECK_MD5CALCULATOR_EXIST())
+			{
+				CREATE_COMPONENTS(out Exception ex);
+				if (ex != null)
+				{
+					ERROR_CREATE_COMPONENTS_FAILED(ex);
+					Close();
+				}
+			}
 
 			if (newArgs.Length != 0)
 			{
@@ -312,11 +341,117 @@ namespace MD5Calculator
 			}
 		}
 
-		private void INITIALIZE_MAINFORM_SIZE()
+		private bool CHECK_MD5CALCULATOR_EXIST()
 		{
+			return File.Exists(appConfigPath);
+		}
+
+		private void CREATE_COMPONENTS(out Exception error)
+		{
+			error = null;
+
+			try
+			{
+				if (!File.Exists(appConfigPath))
+				{
+					CREATE_APP_CONFIG();
+				}
+
+			}
+
+			catch (Exception ex)
+			{
+				error = ex;
+			}
+		}
+
+		private void EXTRACT_RESOURCE(string resourceName, string outputPath)
+		{
+			using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+			{
+				if (stream == null)
+				{
+					ERROR_RESOURCE_EXIST(resourceName);
+					return;
+				}
+
+				using (FileStream fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+				{
+					stream.CopyTo(fileStream);
+				}
+			}
+		}
+
+		private void CREATE_RESOURCE_FOLDER(string newFolderPath)
+		{
+			if (!Directory.Exists(newFolderPath))
+			{
+				Directory.CreateDirectory(newFolderPath);
+			}
+		}
+
+		private void CREATE_APP_CONFIG()
+		{
+			string resourceName = "MD5Calculator.Resources.MD5Calculator.exe.config";
+			string outputFileName = resourceName.Replace("MD5Calculator.Resources.", "");
+			string outputPath = Path.Combine(workPath, outputFileName);
+			EXTRACT_RESOURCE(resourceName, outputPath);
+		}
+
+		private void INITIALIZE_MAINFORM_SIZE(float scale)
+		{
+			// 设置自动缩放模式
 			AutoScaleMode = AutoScaleMode.Dpi;
-			MinimumSize = new Size((int)(20 * systemScale) + ProgressBar.Width + (int)(20 * systemScale), (int)(50 * systemScale) + LabelCalculating.Height * 3 + ProgressBar.Height * 3 + LabelPercent.Height * 3 + (int)(20 * systemScale));
+
+			MinimumSize = new Size(0, 0);
 			MaximumSize = MinimumSize;
+			UPDATE_MIN_MAX_SIZE(scale);
+
+			float baseWidth = 300f;
+			float baseHeight = 150f;
+			Size = new Size((int)(baseWidth * scale), (int)(baseHeight * scale));
+
+			INITIALIZE_TABLE_LAYOUT_PANEL_PIXEL();
+		}
+
+		private void UPDATE_MIN_MAX_SIZE(float scale)
+		{
+			int width = (int)(300 * scale);
+			int height = (int)(150 * scale);
+			MinimumSize = new Size(width, height);
+			MaximumSize = MinimumSize;
+		}
+
+		private void INITIALIZE_TABLE_LAYOUT_PANEL_PIXEL()
+		{
+			// tableLayoutPanel的索引从0开始，即第一行或列的索引号为0
+			// tableLayoutPanel的cell指定为先列后行，例如cell=0,1即为第一列第二行
+
+			// 对列的定义
+			SET_COLUMN_SIZE(tableLayoutPanel, 0, SizeType.Percent, 5f);
+			SET_COLUMN_SIZE(tableLayoutPanel, 1, SizeType.Percent, 30f);
+			SET_COLUMN_SIZE(tableLayoutPanel, 2, SizeType.Percent, 30f);
+			SET_COLUMN_SIZE(tableLayoutPanel, 3, SizeType.Percent, 30f);
+			SET_COLUMN_SIZE(tableLayoutPanel, 4, SizeType.Percent, 5f);
+
+			// 对行的定义
+			SET_ROW_SIZE(tableLayoutPanel, 0, SizeType.Percent, 20f);
+			SET_ROW_SIZE(tableLayoutPanel, 1, SizeType.Percent, 20f);
+			SET_ROW_SIZE(tableLayoutPanel, 2, SizeType.Percent, 20f);
+			SET_ROW_SIZE(tableLayoutPanel, 3, SizeType.Percent, 20f);
+			SET_ROW_SIZE(tableLayoutPanel, 4, SizeType.Percent, 20f);
+		}
+
+		private void SET_COLUMN_SIZE(TableLayoutPanel panel, int num, SizeType type, float fontSize)
+		{
+			panel.ColumnStyles[num].SizeType = type;
+			panel.ColumnStyles[num].Width = fontSize;
+		}
+
+		private void SET_ROW_SIZE(TableLayoutPanel panel, int num, SizeType type, float fontSize)
+		{
+			panel.RowStyles[num].SizeType = type;
+			panel.RowStyles[num].Height = fontSize;
 		}
 
 		private void InitializeLanguageTexts()
@@ -916,6 +1051,44 @@ namespace MD5Calculator
 			string message = $"出现错误";
 			WRITE_ERROR_LOG(message, error);
 		}
+
+		private void ERROR_CREATE_COMPONENTS_FAILED(Exception error)
+		{
+			switch (currentLanguage)
+			{
+				case "zh-CN":
+					MessageBox.Show($"创建依赖组件时出错，错误为: {error.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					break;
+				case "zh-TW":
+					MessageBox.Show($"創建依賴組件時出錯，錯誤為: {error.Message}", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					break;
+				case "en-US":
+					MessageBox.Show($"The error occurred while creating the depended components,error message is: {error.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					break;
+			}
+
+			string message = $"创建依赖组件时出错";
+			WRITE_ERROR_LOG(message, error);
+		}
+		private void ERROR_RESOURCE_EXIST(string resourceName)
+		{
+			switch (currentLanguage)
+			{
+				case "zh-CN":
+					MessageBox.Show("没有找到资源: " + resourceName, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					break;
+				case "zh-TW":
+					MessageBox.Show("沒有找到資源: " + resourceName, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					break;
+				case "en-US":
+					MessageBox.Show("Resource not found: " + resourceName, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					break;
+			}
+
+			string message = $"没有找到资源:{resourceName}";
+			WRITE_MESSAGE_LOG(message);
+		}
+
 
 		private string GET_CURRENT_LANGUAGE()
 		{
